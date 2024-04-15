@@ -19,11 +19,15 @@ const val folderName = "unsplashPhotos"
 object ImageCaching {
      @JvmStatic
      var imageList : MutableList<String> = mutableListOf()
+     private var webService: WebService? = null
+    init {
+       webService = WebService()
+    }
 
     suspend fun getBitmap(imageId : String? = null , url: String? = null): Bitmap? {
         var bitmap: Bitmap? = null
-        val request: Call<ResponseBody?> = WebService().getDownloadPhoto(url)
-        val responseBody = request.execute().body()
+        val request: Call<ResponseBody?>? = webService?.getDownloadPhoto(url)
+        val responseBody = request?.execute()?.body()
         if (responseBody != null) {
             bitmap = getScaledDownBitmapFromUri(responseBody.byteStream())
             if (bitmap != null) {
@@ -31,7 +35,7 @@ object ImageCaching {
                 if(!imageList.contains(fileName)){
                     imageList.add(fileName)
                 }
-                getImage(bitmap , fileName , getImageDirectory())
+                storeImageInLocalCache(bitmap , fileName , getImageDirectory())
             }
             println("BitmapImageList:- $imageList")
         }
@@ -111,7 +115,7 @@ object ImageCaching {
         return directory?.absolutePath ?: ""
     }
 
-    private fun getImage(image: Bitmap?, fileName: String, filePath: String): File? {
+    private fun storeImageInLocalCache(image: Bitmap?, fileName: String, filePath: String): File? {
         var fileObject: File? = null
         run { fileObject = File(filePath + File.separator + fileName) }
         if (image == null) {

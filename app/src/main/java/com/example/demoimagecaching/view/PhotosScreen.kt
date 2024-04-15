@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.demoimagecaching.model.cache.ImageCaching
@@ -42,9 +43,20 @@ fun ScrollablePhotoGrid() {
         appBarIcon = Icons.Default.Home ,
         contentDescription = "Back Arrow Icon")}) { paddingValues ->
         Surface(modifier = Modifier.fillMaxSize() , color = Color.LightGray) {
-            if(InternetUtils.noDataFoundCase()) return@Surface
+            if(InternetUtils.noDataFoundCase()) {
+                Column(modifier = Modifier
+                    .size(200.dp)
+                    .padding(paddingValues) ,
+                    horizontalAlignment = Alignment.CenterHorizontally ,
+                    verticalArrangement = Arrangement.Center){
+                    Text(text = "[No Internet] Please check your connection\nNo Offline Data Found!!!")
+                }
+                return@Surface
+            }
             AnimatedVisibility(visible = rememberedPhotosList.isEmpty()) {
-                Column(modifier = Modifier.size(200.dp).padding(paddingValues) ,
+                Column(modifier = Modifier
+                    .size(200.dp)
+                    .padding(paddingValues) ,
                     horizontalAlignment = Alignment.CenterHorizontally ,
                     verticalArrangement = Arrangement.Center){
                     CircularProgressIndicator(color = colors.primary, modifier = Modifier.size(28.dp))
@@ -86,7 +98,8 @@ fun PhotoItem(photo: String) {
                 contentDescription = null,
                 modifier = Modifier
                     .wrapContentSize()
-                    .aspectRatio(1f, matchHeightConstraintsFirst = false)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = false),
+                contentScale = ContentScale.Fit
             )
         }
     }
