@@ -3,6 +3,8 @@ package com.example.demoimagecaching.model.cache
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
+import android.util.LruCache
 import com.example.demoimagecaching.model.webservice.WebService
 import com.example.demoimagecaching.view.MyApplication
 import okhttp3.ResponseBody
@@ -79,7 +81,11 @@ object ImageCaching {
         options = getBitmapOptions(height, width)
         val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
         val outStream = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            bitmap?.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 60, outStream)
+        }else {
+            bitmap?.compress(Bitmap.CompressFormat.PNG, 60, outStream)
+        }
         return bitmap
     }
 
@@ -115,7 +121,7 @@ object ImageCaching {
         return directory?.absolutePath ?: ""
     }
 
-    private fun storeImageInLocalCache(image: Bitmap?, fileName: String, filePath: String): File? {
+    private fun storeImageInLocalCache(image: Bitmap?, fileName: String? = null, filePath: String? = null): File? {
         var fileObject: File? = null
         run { fileObject = File(filePath + File.separator + fileName) }
         if (image == null) {
@@ -125,7 +131,11 @@ object ImageCaching {
             if (fileObject != null) {
                 val fos = FileOutputStream(fileObject)
                 println("ImageFileName:- $fileName")
-                image.compress(Bitmap.CompressFormat.PNG, 90, fos)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    image.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 60, fos)
+                }else{
+                    image.compress(Bitmap.CompressFormat.PNG, 60, fos)
+                }
                 fos.close()
             }
         } catch (e: IOException) {

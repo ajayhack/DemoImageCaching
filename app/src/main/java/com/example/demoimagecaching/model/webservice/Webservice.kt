@@ -7,12 +7,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Streaming
 import retrofit2.http.Url
 
-const val BASE_URL = "https://api.unsplash.com/photos/"
-const val CLIENT_ACCESS_KEY = "tDyJec3eMtiHP_BygNE63h6qo6FoXfGDnJtgn9bX2oc"
-const val CLIENT_SECRET_KEY = "YqAQ2wwgyoKO7xivbiaqz4-YrRQ_figySYGDNdakppo"
-const val PHOTOS_API = "$BASE_URL?client_id=$CLIENT_ACCESS_KEY"
+const val BASE_URL = "https://acharyaprashant.org"
+const val PHOTOS_API = "$BASE_URL/api/v2/content/misc/media-coverages?limit=100"
 
 class WebService {
    private lateinit var apiInterface: APIInterface
@@ -38,6 +37,7 @@ class WebService {
         suspend fun getPhotos(): MutableList<PhotosModel>
 
         @Headers("Content-Type: application/json")
+        @Streaming
         @GET
         fun downloadImageFile(@Url url: String?): Call<ResponseBody?>
     }

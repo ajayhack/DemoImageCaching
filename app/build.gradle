@@ -6,6 +6,14 @@ plugins {
 android {
     namespace 'com.example.demoimagecaching'
     compileSdk 34
+    signingConfigs {
+        config {
+            keyAlias 'demo'
+            keyPassword 'Linus07@#'
+            storeFile file('demoKeyStore.jks')
+            storePassword 'Linus07@#'
+        }
+    }
 
     defaultConfig {
         applicationId "com.example.demoimagecaching"
@@ -22,8 +30,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            isShrinkResources()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {
@@ -47,14 +57,6 @@ android {
 }
 
 dependencies {
-    //implementation "androidx.compose.ui:ui:$compose_ui_version"
-    //implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
-    //implementation 'androidx.compose.material:material:1.1.1'
-    //implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
-    //implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    //implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    //implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
-    //implementation "com.squareup.okhttp3:okhttp:4.9.3"
     implementation libs.androidx.compose.material.ui
     implementation libs.androidx.compose.viewmodel
     implementation libs.androidx.core.ktx
